@@ -44,29 +44,30 @@ int main(int argc, char *argv[])
             {
                 fprintf(stderr, "L%d: usage: push integer\n", line_number);
                 fclose(file);
-                return EXIT_FAILURE;
+                return (EXIT_FAILURE);
             }
             value = atoi(arg);
             if (value == 0 && strcmp(arg, "0") != 0)
             {
                 fprintf(stderr, "L%d: usage: push integer\n", line_number);
                 fclose(file);
-                return EXIT_FAILURE;
+		free_stack(&stack);
+                return (EXIT_FAILURE);
             }
             push(&stack, value);
         }
         else if (strcmp(opcode, "pall") == 0)
         {
-            pall(&stack, line_number);
+            pall(&stack);
         }
         else
         {
             fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
             fclose(file);
-            return EXIT_FAILURE;
+            return (EXIT_FAILURE);
         }
     }
 
     fclose(file);
-    return EXIT_SUCCESS;
+    return (EXIT_SUCCESS);
 }

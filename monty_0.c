@@ -32,15 +32,27 @@ void push(stack_t **stack, int value)
  * @line_number: line number
  */
 
-void pall(stack_t **stack, unsigned int line_number)
+void pall(stack_t **stack)
 {
 	stack_t *current = *stack;
-
-	(void)line_number;
-
+	
 	while (current != NULL)
 	{
 		printf("%d\n", current->n);
 		current = current->next;
 	}
+}
+
+void free_stack(stack_t **stack)
+{
+	stack_t *current = *stack;
+	stack_t *next;
+
+	while (current != NULL)
+	{
+		next = current->next;
+		free(current);
+		current = next;
+	}
+	*stack = NULL;
 }
