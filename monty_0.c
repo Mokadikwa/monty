@@ -1,29 +1,43 @@
 #include "monty.h"
 
 /**
- * push - pushes an element to the stack
- * @stack: pointer to the stack
- * @value: value to push
  */
 
-void push(stack_t **stack, int value)
+void push(stack_t **stack, unsigned int line_number)
 {
-	stack_t *new_node = malloc(sizeof(stack_t));
+	char value[256];
+	stack_t *new_node;
+	size_t i;
 
-	if (new_node == NULL)
+	if (scanf("%255s", value) != 1)
 	{
-		fprintf(stderr, "Error: malloc failed\n");
+		fprintf(stderr, "L%d: usage: push integer\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	new_node->n = value;
-	new_node->prev = NULL;
-	new_node->next = *stack;
-
-	if (*stack != NULL)
+	for (i = 0; value[i] != '\0'; i++)
 	{
-		(*stack)->prev = new_node;
+		if (!isdigit(value[i]) && (i == 0 && value[i] != '-'))
+		{
+			fprintf(stderr, "L%d: usage: push integer\n", line_number);
+			exit(EXIT_FAILURE);
+		}
 	}
-	*stack = new_node;
+	new_node = malloc(sizeof(stack_t));
+
+	 if (!new_node)
+	 {
+		 fprintf(stderr, "Error: malloc failed\n");
+		 exit(EXIT_FAILURE);
+	 }
+	 new_node->n = atoi(value);
+	 new_node->prev = NULL;
+	 new_node->next = *stack;
+
+	 if (*stack)
+	 {
+		 (*stack)->prev = new_node;
+	 }
+	 *stack = new_node;
 }
 
 /**
@@ -32,9 +46,10 @@ void push(stack_t **stack, int value)
  * @line_number: line number
  */
 
-void pall(stack_t **stack)
+void pall(stack_t **stack, unsigned int line_number)
 {
 	stack_t *current = *stack;
+	(void) line_number;
 	
 	while (current != NULL)
 	{
@@ -43,16 +58,30 @@ void pall(stack_t **stack)
 	}
 }
 
-void free_stack(stack_t **stack)
-{
-	stack_t *current = *stack;
-	stack_t *next;
+/**
+ */
 
-	while (current != NULL)
+void executeInstruction(const char *opcode, stack_t **stack, unsigned int line_number)
+{
+	int i;
+	int num_instructions;
+
+	instruction_t instructions[] = {
+		{"push", push},
+		 {"pall", pall},
+	};
+	num_instructions = sizeof
+		(instructions) / sizeof
+		(instruction_t);
+
+	for (i = 0; i < num_instructions; i++)
 	{
-		next = current->next;
-		free(current);
-		current = next;
+		if (strcmp(opcode, instructions[i].opcode) == 0)
+		{
+			instructions[i].f(stack, line_number);
+			return;
+		}
 	}
-	*stack = NULL;
+	fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
+	exit(EXIT_FAILURE);
 }

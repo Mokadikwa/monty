@@ -9,12 +9,11 @@
 
 int main(int argc, char *argv[])
 {
-    char line[100];
-    char *filename, *opcode, *arg;
+    char line[512];
+    char *filename;
     FILE *file;
-    unsigned int line_number = 0;
+    unsigned int line_number = 1;
     stack_t *stack = NULL;
-    int value;
 
     if (argc != 2)
     {
@@ -24,7 +23,7 @@ int main(int argc, char *argv[])
 
     filename = argv[1];
     file = fopen(filename, "r");
-    if (file == NULL)
+    if (!file)
     {
         fprintf(stderr, "Error: Can't open file %s\n", filename);
         return EXIT_FAILURE;
@@ -32,42 +31,13 @@ int main(int argc, char *argv[])
 
     while (fgets(line, sizeof(line), file))
     {
-        line_number++;
-        opcode = strtok(line, " \n");
-        if (opcode == NULL)
-            continue;
-
-        arg = strtok(NULL, " \n");
-        if (strcmp(opcode, "push") == 0)
-        {
-            if (arg == NULL)
-            {
-                fprintf(stderr, "L%d: usage: push integer\n", line_number);
-                fclose(file);
-                return (EXIT_FAILURE);
-            }
-            value = atoi(arg);
-            if (value == 0 && strcmp(arg, "0") != 0)
-            {
-                fprintf(stderr, "L%d: usage: push integer\n", line_number);
-                fclose(file);
-		free_stack(&stack);
-                return (EXIT_FAILURE);
-            }
-            push(&stack, value);
-        }
-        else if (strcmp(opcode, "pall") == 0)
-        {
-            pall(&stack);
-        }
-        else
-        {
-            fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
-            fclose(file);
-            return (EXIT_FAILURE);
-        }
+        char opcode[256];
+	if (sscanf(line, "%255s", opcode) == 1)
+	{
+		executeInstruction(opcode, &stack, line_number);
+	}
+	line_number++;
     }
-
     fclose(file);
     return (EXIT_SUCCESS);
 }
