@@ -1,6 +1,9 @@
 #include "monty.h"
 
 /**
+ * push - pushes element to the top of the stack
+ * @stack: Double pointer to the stack
+ * @data: Data to be pushed
  */
 
 void push(stack_t **stack, int data)
@@ -25,6 +28,10 @@ void push(stack_t **stack, int data)
 }
 
 /**
+ * pop - removes the top element of the stack
+ * @stack: double pointer to the stack
+ *
+ * Return: the value of the top element
  */
 
 int pop(stack_t **stack)
@@ -49,6 +56,8 @@ int pop(stack_t **stack)
 }
 
 /**
+ * pall - prints all the elements of the stack
+ * @stack: pointer to the stack
  */
 
 void pall(stack_t *stack)

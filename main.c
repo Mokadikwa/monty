@@ -4,6 +4,11 @@
 #include <string.h>
 
 /**
+ * main - entry point
+ * @argc: the number of command-line arguments
+ * @argv: an array of command-line argument string
+ *
+ * Return: exit status of program
  */
 
 int main(int argc, char *argv[])
