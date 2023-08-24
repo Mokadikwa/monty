@@ -8,24 +8,7 @@
 
 void push(stack_t **stack, unsigned int line_number)
 {
-	char value[256];
 	stack_t *new_node;
-	size_t i;
-
-	if (scanf("%255s", value) != 1)
-	{
-		fprintf(stderr, "L%d: usage: push integer\n", line_number);
-		exit(EXIT_FAILURE);
-	}
-
-	for (i = 0; value[i] != '\0'; i++)
-	{
-		if (!isdigit(value[i]) && (i == 0 && value[i] != '-'))
-		{
-			fprintf(stderr, "L%d: usage: push integer\n", line_number);
-			exit(EXIT_FAILURE);
-		}
-	}
 
 	new_node = malloc(sizeof(stack_t));
 
@@ -34,7 +17,7 @@ void push(stack_t **stack, unsigned int line_number)
 		fprintf(stderr, "Error: malloc failed\n");
 		exit(EXIT_FAILURE);
 	}
-	new_node->n = atoi(value);
+	new_node->n = value;
 	new_node->prev = NULL;
 	new_node->next = *stack;
 

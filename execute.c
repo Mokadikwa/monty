@@ -24,7 +24,21 @@ void executeInstruction(const char *opcode, stack_t **stack,
 	{
 		if (strcmp(opcode, instructions[i].opcode) == 0)
 		{
-			instructions[i].f(stack, line_number);
+			if (strcmp(opcode, "push") == 0)
+			{
+				int value;
+
+				if (sscanf(line, "%255s %d", opcode, &value) != 2)
+				{
+					fprintf(stderr, "L%d: usage: push integer\n", line_number);
+					exit(EXIT_FAILURE);
+				}
+				instructions[i].f(stack, value, line_number);
+			}
+			else
+			{
+				instructions[i].f(stack, line_number);
+			}
 			return;
 		}
 	}
