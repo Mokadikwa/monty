@@ -30,29 +30,25 @@ void push(stack_t **stack, int data)
 /**
  * pop - removes the top element of the stack
  * @stack: double pointer to the stack
- *
- * Return: the value of the top element
+ * @line_number: line number of the instruction
  */
 
-int pop(stack_t **stack)
+void pop(stack_t **stack, unsigned int line_number)
 {
-	int data;
 	stack_t *temp;
 
 	if (*stack == NULL)
 	{
-		fprintf(stderr, "Error: Stack underflow\n");
+		fprintf(stderr, "L%u: can't pop an empty stack\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	data = (*stack)->n;
 	temp = *stack;
+	*stack = (*stack)->next;
 
 	if (*stack != NULL)
-	{
 		(*stack)->prev = NULL;
-	}
+
 	free(temp);
-	return (data);
 }
 
 /**
@@ -79,6 +75,8 @@ void processFile(const char *filename)
 	FILE *file = fopen(filename, "r");
 	stack_t *stack;
 	char line[512];
+	unsigned int line_number;
+	line_number = 1;
 
 	if (file == NULL)
 	{
@@ -99,6 +97,10 @@ void processFile(const char *filename)
 			{
 				push(&stack, arg);
 			}
+			else if (strcmp(opcode, "pop") == 0)
+			{
+				pop(&stack, line_number);
+			}
 			else
 			{
 				fprintf(stderr, "Error: Unknown opcode %s\n", opcode);
@@ -109,6 +111,7 @@ void processFile(const char *filename)
 		{
 			pall(stack);
 		}
+		line_number++;
 	}
 	fclose(file);
 }
